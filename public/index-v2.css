@@ -1,0 +1,58 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    width: 100%;
+}
+
+body {
+    width: 100%;
+}
+
+.container{
+    padding: 40px 0;
+}
+
+.button__initial {
+    color: black;
+    background-color: #AAE0F2;
+    height: 60px;
+    width: 60px;
+    padding: 5px;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.button__initial:nth-child(4n+1){
+    margin-right: 0;
+}
+
+.calculator {
+    width: 23.7%;
+    margin: auto;
+}
+
+.entranceField {
+    width: 100%;
+}
+
+.logger {
+    width: inherit;
+    height: 30px;
+    border: 2px solid #95B3BD;
+    border-bottom: none;
+}
+
+.input {
+    width: inherit;
+    height: 30px;
+    border: 2px solid #95B3BD;
+    border-top: none;
+}
+
+.input:active, .input:focus, .input:hover, .input:visited {
+    outline:0px !important;
+    -webkit-appearance:none;
+}
