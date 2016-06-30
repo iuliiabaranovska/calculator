@@ -57,8 +57,7 @@ var Calculator = React.createClass({
 
 	getDefaultProps: function () {
 		return {
-			calculatorStyle: 'calculator',
-			lastCommand: null
+			calculatorStyle: 'calculator'
 		};
 	},
 
@@ -66,8 +65,22 @@ var Calculator = React.createClass({
 		return {
 			string: '',
 			value: '',
-			result: null
+			result: null,
+			lastCommand: null
 		};
+	},
+
+	add: function (value1, value2) {
+		return value1 + value2;
+	},
+
+	subtract: function () {
+	},
+
+	multiply: function () {
+	},
+
+	divide: function () {
 	},
 
 	logValue: function (currentValue) {
@@ -85,20 +98,24 @@ var Calculator = React.createClass({
 	},
 
 	addValue: function () {
-		if (this.props.lastCommand !== null){
+		//var temp = ((this.state.result === null) ? 0 : this.state.result) + +this.state.value;
+		var temp = this.state.value;
 
+		if (this.state.lastCommand !== null) {
+			temp = this.state.lastCommand(temp, this.state.value);
 		}
-		var tempResult = ((this.state.result === null) ? 0 : this.state.result) + +this.state.value;
+		else {
+			this.state.lastCommand = this.add;
+		}
 		this.setState({
 			string: this.state.string + this.state.value + '+',
-			value: tempResult,
-			result: tempResult
+			value: temp,
+			result: temp
 		});
 		this.clearValue = true;
 	},
 
 	subtractValue: function () {
-
 	},
 
 	multiplyValue: function () {
@@ -131,22 +148,6 @@ var Calculator = React.createClass({
 	},
 
 	calculate: function () {
-
-	},
-
-	add: function (value1, value2) {
-		return value1 + value2;
-	},
-
-	subtract: function () {
-
-	},
-
-	multiply: function () {
-
-	},
-
-	divide: function () {
 
 	},
 
