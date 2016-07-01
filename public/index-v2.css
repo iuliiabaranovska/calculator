@@ -30,7 +30,7 @@ body {
 }
 
 .calculator {
-    width: 23.7%;
+    width: 270px;
     margin: auto;
 }
 
@@ -40,9 +40,9 @@ body {
 
 .logger {
     width: inherit;
-    height: 30px;
     border: 2px solid #95B3BD;
     border-bottom: none;
+    height: 90px;
 }
 
 .input {

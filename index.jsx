@@ -54,6 +54,7 @@ var Button = React.createClass({
 
 var Calculator = React.createClass({
 	clearValue: false,
+	clearString: false,
 
 	getDefaultProps: function () {
 		return {
@@ -74,13 +75,16 @@ var Calculator = React.createClass({
 		return value1 + value2;
 	},
 
-	subtract: function () {
+	subtract: function (value1, value2) {
+		return value1 - value2;
 	},
 
-	multiply: function () {
+	multiply: function (value1, value2) {
+		return value1 * value2;
 	},
 
-	divide: function () {
+	divide: function (value1, value2) {
+		return value1 / value2;
 	},
 
 	logValue: function (currentValue) {
@@ -94,61 +98,121 @@ var Calculator = React.createClass({
 				value: currentValue
 			});
 		}
+		if (this.clearString) {
+			this.setState({
+				string: this.state.string,
+				value: currentValue,
+				result: null
+			});
+		}
 		this.clearValue = false;
+		this.clearString = false;
 	},
 
 	addValue: function () {
-		//var temp = ((this.state.result === null) ? 0 : this.state.result) + +this.state.value;
-		var temp = this.state.value;
+		var currentResult = (this.state.result !== null) ? this.state.result : +this.state.value,
+			currentValue = this.state.value;
 
 		if (this.state.lastCommand !== null) {
-			temp = this.state.lastCommand(temp, this.state.value);
+			currentResult = this.state.lastCommand(currentResult, +this.state.value);
+			currentValue = currentResult;
 		}
-		else {
-			this.state.lastCommand = this.add;
-		}
+
+		this.state.lastCommand = this.add;
+
 		this.setState({
 			string: this.state.string + this.state.value + '+',
-			value: temp,
-			result: temp
+			value: currentValue,
+			result: currentResult
 		});
 		this.clearValue = true;
 	},
 
 	subtractValue: function () {
+		var currentResult = (this.state.result !== null) ? this.state.result : +this.state.value,
+			currentValue = this.state.value;
+
+		if (this.state.lastCommand !== null) {
+			currentResult = this.state.lastCommand(currentResult, +this.state.value);
+			currentValue = currentResult;
+		}
+
+		this.state.lastCommand = this.subtract;
+
+		this.setState({
+			string: this.state.string + this.state.value + '-',
+			value: currentValue,
+			result: currentResult
+		});
+		this.clearValue = true;
 	},
 
 	multiplyValue: function () {
-		var result = (this.state.result === null) ? 1 : this.state.result;
-		var tempResult = result * +this.state.value;
+		var currentResult = (this.state.result !== null) ? this.state.result : +this.state.value,
+			currentValue = this.state.value;
+
+		if (this.state.lastCommand !== null) {
+			currentResult = this.state.lastCommand(currentResult, +this.state.value);
+			currentValue = currentResult;
+		}
+
+		this.state.lastCommand = this.multiply;
+
 		this.setState({
 			string: this.state.string + this.state.value + '*',
-			value: tempResult,
-			result: tempResult
+			value: currentValue,
+			result: currentResult
 		});
 		this.clearValue = true;
 	},
 
 	divideValue: function () {
-		var result = (this.state.result === null) ? this.state.value : this.state.result;
-		var tempResult = result / +this.state.value;
+		var currentResult = (this.state.result !== null) ? this.state.result : +this.state.value,
+			currentValue = this.state.value;
+
+		if (this.state.lastCommand !== null) {
+			currentResult = this.state.lastCommand(currentResult, +this.state.value);
+			currentValue = currentResult;
+		}
+
+		this.state.lastCommand = this.divide;
+
 		this.setState({
-			string: this.state.string + this.state.value + '/',
-			value: tempResult,
-			result: tempResult
+			string: this.state.string + this.state.value + ':',
+			value: currentValue,
+			result: currentResult
 		});
 		this.clearValue = true;
 	},
 
 	deleteValue: function () {
+		var currentResult = (this.state.result !== null) ? this.state.result : +this.state.value,
+			currentValue = this.state.value;
+
 		this.setState({
 			string: this.state.string,
-			value: tempResult
+			value: currentValue.slice(0,-1),
+			result: currentResult
 		});
+		this.clearValue = true;
 	},
 
 	calculate: function () {
+		var currentResult = (this.state.result !== null) ? this.state.result : +this.state.value,
+			currentValue = this.state.value;
 
+		if (this.state.lastCommand !== null) {
+			currentResult = this.state.lastCommand(currentResult, +this.state.value);
+			currentValue = currentResult;
+		}
+
+		this.setState({
+			string: this.state.string + this.state.value,
+			value: currentValue
+		});
+
+		this.clearValue = true;
+		this.clearString=true;
 	},
 
 	render: function () {
