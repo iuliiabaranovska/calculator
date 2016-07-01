@@ -54,7 +54,6 @@ var Button = React.createClass({
 
 var Calculator = React.createClass({
 	clearValue: false,
-	clearString: false,
 
 	getDefaultProps: function () {
 		return {
@@ -98,18 +97,12 @@ var Calculator = React.createClass({
 				value: currentValue
 			});
 		}
-		if (this.clearString) {
-			this.setState({
-				string: this.state.string,
-				value: currentValue,
-				result: null
-			});
-		}
 		this.clearValue = false;
-		this.clearString = false;
 	},
 
 	addValue: function () {
+		//debugger;
+
 		var currentResult = (this.state.result !== null) ? this.state.result : +this.state.value,
 			currentValue = this.state.value;
 
@@ -125,6 +118,7 @@ var Calculator = React.createClass({
 			value: currentValue,
 			result: currentResult
 		});
+
 		this.clearValue = true;
 	},
 
@@ -186,7 +180,7 @@ var Calculator = React.createClass({
 	},
 
 	deleteValue: function () {
-		var currentValue = this.state.value.slice(0,-1);
+		var currentValue = this.state.value.slice(0, -1);
 
 		this.setState({
 			string: this.state.string,
@@ -202,15 +196,16 @@ var Calculator = React.createClass({
 		if (this.state.lastCommand !== null) {
 			currentResult = this.state.lastCommand(currentResult, +this.state.value);
 			currentValue = currentResult;
+			this.state.lastCommand = null;
 		}
 
 		this.setState({
-			string: this.state.string + this.state.value,
-			value: currentValue
+			string: '',
+			value: currentValue,
+			result: currentResult
 		});
 
 		this.clearValue = true;
-		this.clearString=true;
 	},
 
 	render: function () {
