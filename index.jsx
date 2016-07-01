@@ -186,13 +186,11 @@ var Calculator = React.createClass({
 	},
 
 	deleteValue: function () {
-		var currentResult = (this.state.result !== null) ? this.state.result : +this.state.value,
-			currentValue = this.state.value;
+		var currentValue = this.state.value.slice(0,-1);
 
 		this.setState({
 			string: this.state.string,
-			value: currentValue.slice(0,-1),
-			result: currentResult
+			value: currentValue,
 		});
 		this.clearValue = true;
 	},
