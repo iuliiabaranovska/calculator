@@ -72,6 +72,7 @@ var Calculator = React.createClass({
 
 	checkForInfinityAndNan: function (result) {
 		if (result === Infinity || isNaN(result)) {
+			//debugger;
 			return 'Value out of memory';
 		}
 	},
@@ -88,7 +89,7 @@ var Calculator = React.createClass({
 
 			'*': function (value1, value2) {
 				var product = value1 * value2;
-				this.checkForInfinityAndNan(product);
+				product = this.checkForInfinityAndNan(product);
 				return product;
 			}.bind(this),
 
