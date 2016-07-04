@@ -42,7 +42,11 @@ body {
     width: inherit;
     border: 2px solid #95B3BD;
     border-bottom: none;
-    height: 90px;
+    height: 70px;
+    line-height: 1.5;
+    overflow-y: auto;
+    overflow-x: hidden;
+    word-wrap: break-word;
 }
 
 .input {
