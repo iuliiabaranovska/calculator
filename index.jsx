@@ -70,32 +70,22 @@ var Calculator = React.createClass({
 		};
 	},
 
-	add: function (value1, value2) {
-		return value1 + value2;
-	},
-
-	subtract: function (value1, value2) {
-		return value1 - value2;
-	},
-
-	multiply: function (value1, value2) {
-		return value1 * value2;
-	},
-
-	divide: function (value1, value2) {
-		if (value2 === 0) {
-			return this.state.value = 'Cannot divide by zero';
-		}
-		return value1 / value2;
-	},
-
-	that:this,
-
 	operations: {
-		'+': that.add,
-		'-': that.subtract,
-		'*': that.multiply,
-		'/': that.divide
+		'+': function (value1, value2) {
+			return value1 + value2;
+		},
+		'-': function (value1, value2) {
+			return value1 - value2;
+		},
+		'*': function (value1, value2) {
+			return value1 * value2;
+		},
+		'/': function (value1, value2) {
+			if (value2 === 0) {
+				return this.value = 'Cannot divide by zero';
+			}
+			return value1 / value2;
+		}
 	},
 
 	logValue: function (currentValue) {
@@ -112,7 +102,7 @@ var Calculator = React.createClass({
 		this.clearValue = false;
 	},
 
-	addValue: function () {
+	computeValue: function (value) {
 		var currentResult = (this.state.result !== null) ? this.state.result : +this.state.value,
 			currentValue = this.state.value;
 
@@ -121,71 +111,14 @@ var Calculator = React.createClass({
 			currentValue = currentResult;
 		}
 
-		this.state.lastCommand = this.add;
+		this.state.lastCommand = this.operations[value];
 
 		this.setState({
-			string: this.state.string + this.state.value + '+',
+			string: this.state.string + this.state.value + value,
 			value: currentValue,
 			result: currentResult
 		});
 
-		this.clearValue = true;
-	},
-
-	subtractValue: function () {
-		var currentResult = (this.state.result !== null) ? this.state.result : +this.state.value,
-			currentValue = this.state.value;
-
-		if (this.state.lastCommand !== null) {
-			currentResult = this.state.lastCommand(currentResult, +this.state.value);
-			currentValue = currentResult;
-		}
-
-		this.state.lastCommand = this.subtract;
-
-		this.setState({
-			string: this.state.string + this.state.value + '-',
-			value: currentValue,
-			result: currentResult
-		});
-		this.clearValue = true;
-	},
-
-	multiplyValue: function () {
-		var currentResult = (this.state.result !== null) ? this.state.result : +this.state.value,
-			currentValue = this.state.value;
-
-		if (this.state.lastCommand !== null) {
-			currentResult = this.state.lastCommand(currentResult, +this.state.value);
-			currentValue = currentResult;
-		}
-
-		this.state.lastCommand = this.multiply;
-
-		this.setState({
-			string: this.state.string + this.state.value + '*',
-			value: currentValue,
-			result: currentResult
-		});
-		this.clearValue = true;
-	},
-
-	divideValue: function () {
-		var currentResult = (this.state.result !== null) ? this.state.result : +this.state.value,
-			currentValue = this.state.value;
-
-		if (this.state.lastCommand !== null) {
-			currentResult = this.state.lastCommand(currentResult, +this.state.value);
-			currentValue = currentResult;
-		}
-
-		this.state.lastCommand = this.divide;
-
-		this.setState({
-			string: this.state.string + this.state.value + ':',
-			value: currentValue,
-			result: currentResult
-		});
 		this.clearValue = true;
 	},
 
@@ -223,13 +156,13 @@ var Calculator = React.createClass({
 			<div className={this.props.calculatorStyle}>
 				<EntranceField string={this.state.string} value={this.state.value}/>
 				<Button value={'<--'} onClickHandler={this.deleteValue}/>
-				<Button value={'/'} onClickHandler={this.divideValue}/>
-				<Button value={'*'} onClickHandler={this.multiplyValue}/>
-				<Button value={'-'} onClickHandler={this.subtractValue}/>
+				<Button value={'/'} onClickHandler={this.computeValue}/>
+				<Button value={'*'} onClickHandler={this.computeValue}/>
+				<Button value={'-'} onClickHandler={this.computeValue}/>
 				<Button value={7} onClickHandler={this.logValue}/>
 				<Button value={8} onClickHandler={this.logValue}/>
 				<Button value={9} onClickHandler={this.logValue}/>
-				<Button value={'+'} onClickHandler={this.addValue}/>
+				<Button value={'+'} onClickHandler={this.computeValue}/>
 				<Button value={4} onClickHandler={this.logValue}/>
 				<Button value={5} onClickHandler={this.logValue}/>
 				<Button value={6} onClickHandler={this.logValue}/>
