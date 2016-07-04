@@ -101,8 +101,6 @@ var Calculator = React.createClass({
 	},
 
 	addValue: function () {
-		//debugger;
-
 		var currentResult = (this.state.result !== null) ? this.state.result : +this.state.value,
 			currentValue = this.state.value;
 
