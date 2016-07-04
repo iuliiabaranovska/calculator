@@ -83,7 +83,19 @@ var Calculator = React.createClass({
 	},
 
 	divide: function (value1, value2) {
+		if (value2 === 0) {
+			return this.state.value = 'Cannot divide by zero';
+		}
 		return value1 / value2;
+	},
+
+	that:this,
+
+	operations: {
+		'+': that.add,
+		'-': that.subtract,
+		'*': that.multiply,
+		'/': that.divide
 	},
 
 	logValue: function (currentValue) {
