@@ -25,7 +25,7 @@ var EntranceField = React.createClass({
 		return (
 			<div className={this.props.entranceFieldStyle}>
 				<div className={this.props.loggerStyle}>{this.props.string}</div>
-				<input className={this.props.inputStyle} value={this.props.value}/>
+				<input type="text" className={this.props.inputStyle} value={this.props.value}/>
 			</div>
 		);
 	}
@@ -75,33 +75,40 @@ var Calculator = React.createClass({
 			//debugger;
 			return 'Value out of memory';
 		}
+		else{
+			return result;
+		}
 	},
 
 	getOperations: function () {
 		return {
 			'+': function (value1, value2) {
-				return value1 + value2;
-			},
+				var result = value1 + value2;
+				result = this.checkForInfinityAndNan(result);
+				return result;
+			}.bind(this),
 
 			'-': function (value1, value2) {
-				return value1 - value2;
-			},
+				var result = value1 - value2;
+				result = this.checkForInfinityAndNan(result);
+				return result;
+			}.bind(this),
 
 			'*': function (value1, value2) {
-				var product = value1 * value2;
-				product = this.checkForInfinityAndNan(product);
-				return product;
+				var result = value1 * value2;
+				result = this.checkForInfinityAndNan(result);
+				return result;
 			}.bind(this),
 
 			'/': function (value1, value2) {
-				var fraction = value1 / value2;
+				var result = value1 / value2;
 				if (value2 === 0) {
 					return 'Cannot divide by zero';
 				}
-				if (fraction === Infinity || isNaN(fraction)) {
+				if (result === Infinity || isNaN(result)) {
 					return 'Value out of memory';
 				}
-				return fraction;
+				return result;
 			}
 		}
 	},
@@ -146,7 +153,7 @@ var Calculator = React.createClass({
 	},
 
 	deleteValue: function () {
-		var currentValue = this.state.value.slice(0, -1);
+		var currentValue = this.state.value.toString().slice(0, -1);
 
 		this.setState({
 			string: this.state.string,
@@ -178,7 +185,7 @@ var Calculator = React.createClass({
 	render: function () {
 		return (
 			<div className={this.props.calculatorStyle}>
-				<EntranceField string={this.state.string} value={this.state.value} on ref="entranceField"/>
+				<EntranceField string={this.state.string} value={this.state.value}/>
 				<Button value={'<--'} onClickHandler={this.deleteValue}/>
 				<Button value={'/'} onClickHandler={this.computeValue}/>
 				<Button value={'*'} onClickHandler={this.computeValue}/>
