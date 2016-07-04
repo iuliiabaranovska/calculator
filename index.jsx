@@ -70,21 +70,38 @@ var Calculator = React.createClass({
 		};
 	},
 
-	operations: {
-		'+': function (value1, value2) {
-			return value1 + value2;
-		},
-		'-': function (value1, value2) {
-			return value1 - value2;
-		},
-		'*': function (value1, value2) {
-			return value1 * value2;
-		},
-		'/': function (value1, value2) {
-			if (value2 === 0) {
-				return this.value = 'Cannot divide by zero';
+	checkForInfinityAndNan: function (result) {
+		if (result === Infinity || isNaN(result)) {
+			return 'Value out of memory';
+		}
+	},
+
+	getOperations: function () {
+		return {
+			'+': function (value1, value2) {
+				return value1 + value2;
+			},
+
+			'-': function (value1, value2) {
+				return value1 - value2;
+			},
+
+			'*': function (value1, value2) {
+				var product = value1 * value2;
+				this.checkForInfinityAndNan(product);
+				return product;
+			}.bind(this),
+
+			'/': function (value1, value2) {
+				var fraction = value1 / value2;
+				if (value2 === 0) {
+					return 'Cannot divide by zero';
+				}
+				if (fraction === Infinity || isNaN(fraction)) {
+					return 'Value out of memory';
+				}
+				return fraction;
 			}
-			return value1 / value2;
 		}
 	},
 
@@ -99,6 +116,7 @@ var Calculator = React.createClass({
 				value: currentValue
 			});
 		}
+
 		this.clearValue = false;
 	},
 
@@ -111,7 +129,11 @@ var Calculator = React.createClass({
 			currentValue = currentResult;
 		}
 
-		this.state.lastCommand = this.operations[value];
+		this.state.lastCommand = this.getOperations()[value];
+
+		if (currentResult === 'Cannot divide by zero' || currentResult === 'Value out of memory') {
+			currentResult = +this.state.value;
+		}
 
 		this.setState({
 			string: this.state.string + this.state.value + value,
@@ -129,6 +151,7 @@ var Calculator = React.createClass({
 			string: this.state.string,
 			value: currentValue,
 		});
+
 		this.clearValue = true;
 	},
 
@@ -154,7 +177,7 @@ var Calculator = React.createClass({
 	render: function () {
 		return (
 			<div className={this.props.calculatorStyle}>
-				<EntranceField string={this.state.string} value={this.state.value}/>
+				<EntranceField string={this.state.string} value={this.state.value} on ref="entranceField"/>
 				<Button value={'<--'} onClickHandler={this.deleteValue}/>
 				<Button value={'/'} onClickHandler={this.computeValue}/>
 				<Button value={'*'} onClickHandler={this.computeValue}/>
