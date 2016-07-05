@@ -54,6 +54,8 @@ var Button = React.createClass({
 
 var Calculator = React.createClass({
 	clearValue: false,
+	lastCommand: null,
+
 
 	getDefaultProps: function () {
 		return {
@@ -65,8 +67,7 @@ var Calculator = React.createClass({
 		return {
 			string: '',
 			value: '',
-			result: null,
-			lastCommand: null
+			result: null
 		};
 	},
 
@@ -131,12 +132,12 @@ var Calculator = React.createClass({
 		var currentResult = (this.state.result !== null) ? this.state.result : +this.state.value,
 			currentValue = this.state.value;
 
-		if (this.state.lastCommand !== null) {
-			currentResult = this.state.lastCommand(currentResult, +this.state.value);
+		if (this.lastCommand !== null) {
+			currentResult = this.lastCommand(currentResult, +this.state.value);
 			currentValue = currentResult;
 		}
 
-		this.state.lastCommand = this.getOperations()[value];
+		this.lastCommand = this.getOperations()[value];
 
 		if (currentResult === 'Cannot divide by zero' || currentResult === 'Value out of memory') {
 			currentResult = +this.state.value;
@@ -166,10 +167,10 @@ var Calculator = React.createClass({
 		var currentResult = (this.state.result !== null) ? this.state.result : +this.state.value,
 			currentValue = this.state.value;
 
-		if (this.state.lastCommand !== null) {
-			currentResult = this.state.lastCommand(currentResult, +this.state.value);
+		if (this.lastCommand !== null) {
+			currentResult = this.lastCommand(currentResult, +this.state.value);
 			currentValue = currentResult;
-			this.state.lastCommand = null;
+			this.lastCommand = null;
 		}
 
 		this.setState({
