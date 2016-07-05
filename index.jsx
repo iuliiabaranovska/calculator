@@ -41,7 +41,9 @@ var Button = React.createClass({
 	},
 
 	log: function () {
-		this.props.onClickHandler(this.props.value);
+		if (this.props.onClickHandler !== null) {
+			this.props.onClickHandler(this.props.value);
+		}
 	},
 
 	render: function () {
@@ -53,17 +55,19 @@ var Button = React.createClass({
 });
 
 var Calculator = React.createClass({
+	memoryLeaks: 'Value out of memory',
+	banOfDivision: 'Cannot divide by zero',
 	clearValue: false,
 	lastCommand: null,
 
 
-	getDefaultProps: function () {
+	getDefaultProps: function() {
 		return {
 			calculatorStyle: 'calculator'
 		};
 	},
 
-	getInitialState: function () {
+	getInitialState: function() {
 		return {
 			string: '',
 			value: '',
@@ -73,9 +77,9 @@ var Calculator = React.createClass({
 
 	checkForInfinityAndNan: function (result) {
 		if (result === Infinity || isNaN(result)) {
-			return 'Value out of memory';
+			return this.memoryLeaks;
 		}
-		else{
+		else {
 			return result;
 		}
 	},
@@ -103,13 +107,11 @@ var Calculator = React.createClass({
 			'/': function (value1, value2) {
 				var result = value1 / value2;
 				if (value2 === 0) {
-					return 'Cannot divide by zero';
+					return this.banOfDivision;
 				}
-				if (result === Infinity || isNaN(result)) {
-					return 'Value out of memory';
-				}
+				result = this.checkForInfinityAndNan(result);
 				return result;
-			}
+			}.bind(this)
 		}
 	},
 
@@ -139,7 +141,7 @@ var Calculator = React.createClass({
 
 		this.lastCommand = this.getOperations()[value];
 
-		if (currentResult === 'Cannot divide by zero' || currentResult === 'Value out of memory') {
+		if (currentResult === this.banOfDivision || currentResult === this.memoryLeaks) {
 			currentResult = +this.state.value;
 		}
 
