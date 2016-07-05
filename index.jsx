@@ -49,7 +49,7 @@ var Button = React.createClass({
 	render: function () {
 		return (
 			<button className={this.props.buttonStyle}
-							onClick={this.log}>{this.props.value}</button>
+							onClick={this.log} disabled={!this.props.canEnterValue}>{this.props.value}</button>
 		)
 	}
 });
@@ -61,17 +61,18 @@ var Calculator = React.createClass({
 	lastCommand: null,
 
 
-	getDefaultProps: function() {
+	getDefaultProps: function () {
 		return {
 			calculatorStyle: 'calculator'
 		};
 	},
 
-	getInitialState: function() {
+	getInitialState: function () {
 		return {
 			string: '',
 			value: '',
-			result: null
+			result: null,
+			canEnterValue: true
 		};
 	},
 
@@ -125,7 +126,7 @@ var Calculator = React.createClass({
 					return this.banOfDivision;
 				}
 				if (this.checkForInfinityAndNan(result)) {
-					 return this.memoryLeaks;
+					return this.memoryLeaks;
 				}
 				return result;
 			}.bind(this),
@@ -158,8 +159,12 @@ var Calculator = React.createClass({
 
 		this.lastCommand = this.getOperations()[value];
 
-		if (currentResult === this.banOfDivision || currentResult === this.memoryLeaks) {
+		if (this.checkForInfinityAndNan(currentResult) || this.checkForZero(value)) {
 			currentResult = +this.state.value;
+
+			this.setState({
+				canEnterValue: false
+			});
 		}
 
 		this.setState({
@@ -172,14 +177,18 @@ var Calculator = React.createClass({
 	},
 
 	deleteValue: function () {
-		var currentValue = this.state.value.toString().slice(0, -1);
+		var fullValue = this.state.value.toString(),
+			currentValue = fullValue.slice(0, -1);
+
+		if (fullValue === this.memoryLeaks || fullValue === this.banOfDivision) {
+			currentValue = fullValue.slice(0, -fullValue.length - 1);
+		}
 
 		this.setState({
 			string: this.state.string,
 			value: currentValue,
+			canEnterValue: true
 		});
-
-		this.clearValue = true;
 	},
 
 	calculate: function () {
@@ -205,22 +214,22 @@ var Calculator = React.createClass({
 		return (
 			<div className={this.props.calculatorStyle}>
 				<EntranceField string={this.state.string} value={this.state.value}/>
-				<Button value={'<--'} onClickHandler={this.deleteValue}/>
-				<Button value={'/'} onClickHandler={this.computeValue}/>
-				<Button value={'*'} onClickHandler={this.computeValue}/>
-				<Button value={'-'} onClickHandler={this.computeValue}/>
-				<Button value={7} onClickHandler={this.logValue}/>
-				<Button value={8} onClickHandler={this.logValue}/>
-				<Button value={9} onClickHandler={this.logValue}/>
-				<Button value={'+'} onClickHandler={this.computeValue}/>
-				<Button value={4} onClickHandler={this.logValue}/>
-				<Button value={5} onClickHandler={this.logValue}/>
-				<Button value={6} onClickHandler={this.logValue}/>
-				<Button value={'ENTER'} onClickHandler={this.calculate}/>
-				<Button value={1} onClickHandler={this.logValue}/>
-				<Button value={2} onClickHandler={this.logValue}/>
-				<Button value={3} onClickHandler={this.logValue}/>
-				<Button value={0} onClickHandler={this.logValue}/>
+				<Button value={'<--'} onClickHandler={this.deleteValue} canEnterValue={true}/>
+				<Button value={'/'} onClickHandler={this.computeValue} canEnterValue={this.state.canEnterValue}/>
+				<Button value={'*'} onClickHandler={this.computeValue} canEnterValue={this.state.canEnterValue}/>
+				<Button value={'-'} onClickHandler={this.computeValue} canEnterValue={this.state.canEnterValue}/>
+				<Button value={7} onClickHandler={this.logValue} canEnterValue={this.state.canEnterValue}/>
+				<Button value={8} onClickHandler={this.logValue} canEnterValue={this.state.canEnterValue}/>
+				<Button value={9} onClickHandler={this.logValue} canEnterValue={this.state.canEnterValue}/>
+				<Button value={'+'} onClickHandler={this.computeValue} canEnterValue={this.state.canEnterValue}/>
+				<Button value={4} onClickHandler={this.logValue} canEnterValue={this.state.canEnterValue}/>
+				<Button value={5} onClickHandler={this.logValue} canEnterValue={this.state.canEnterValue}/>
+				<Button value={6} onClickHandler={this.logValue} canEnterValue={this.state.canEnterValue}/>
+				<Button value={'ENTER'} onClickHandler={this.calculate} canEnterValue={this.state.canEnterValue}/>
+				<Button value={1} onClickHandler={this.logValue} canEnterValue={this.state.canEnterValue}/>
+				<Button value={2} onClickHandler={this.logValue} canEnterValue={this.state.canEnterValue}/>
+				<Button value={3} onClickHandler={this.logValue} canEnterValue={this.state.canEnterValue}/>
+				<Button value={0} onClickHandler={this.logValue} canEnterValue={this.state.canEnterValue}/>
 			</div>)
 	}
 });
