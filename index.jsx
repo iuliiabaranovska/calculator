@@ -77,10 +77,19 @@ var Calculator = React.createClass({
 
 	checkForInfinityAndNan: function (result) {
 		if (result === Infinity || isNaN(result)) {
-			return this.memoryLeaks;
+			return true;
 		}
 		else {
-			return result;
+			return false;
+		}
+	},
+
+	checkForZero: function (value) {
+		if (value === 0) {
+			return true;
+		}
+		else {
+			return false;
 		}
 	},
 
@@ -88,30 +97,38 @@ var Calculator = React.createClass({
 		return {
 			'+': function (value1, value2) {
 				var result = value1 + value2;
-				result = this.checkForInfinityAndNan(result);
+				if (this.checkForInfinityAndNan(result)) {
+					return this.memoryLeaks;
+				}
 				return result;
 			}.bind(this),
 
 			'-': function (value1, value2) {
 				var result = value1 - value2;
-				result = this.checkForInfinityAndNan(result);
+				if (this.checkForInfinityAndNan(result)) {
+					return this.memoryLeaks;
+				}
 				return result;
 			}.bind(this),
 
 			'*': function (value1, value2) {
 				var result = value1 * value2;
-				result = this.checkForInfinityAndNan(result);
+				if (this.checkForInfinityAndNan(result)) {
+					return this.memoryLeaks;
+				}
 				return result;
 			}.bind(this),
 
 			'/': function (value1, value2) {
 				var result = value1 / value2;
-				if (value2 === 0) {
+				if (this.checkForZero(value2)) {
 					return this.banOfDivision;
 				}
-				result = this.checkForInfinityAndNan(result);
+				if (this.checkForInfinityAndNan(result)) {
+					 return this.memoryLeaks;
+				}
 				return result;
-			}.bind(this)
+			}.bind(this),
 		}
 	},
 
